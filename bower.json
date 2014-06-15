@@ -1,0 +1,25 @@
+{
+  "name": "Marionette Brownbag",
+  "version": "0.0.0",
+  "homepage": "https://github.com/tomhicks/Marionette-Brownbag",
+  "authors": [
+    "Tom Hicks <tom.hicks@me.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "backbone.marionette": "~1.8.8",
+    "jquery": "~2.1.1",
+    "underscore": "~1.6.0"
+  }
+}
