@@ -1,0 +1,162 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/underscore/underscore.js"></script>
+        <script src="bower_components/backbone/backbone.js"></script>
+        <script src="bower_components/backbone.marionette/lib/backbone.marionette.js"></script>
+
+        <script type="text/template" id="profile-template">
+            <h1><%= name %> <small><%= title %></small></h1>
+            <div class='skills'>
+            </div>
+        </script>
+
+        <script type='text/template' id='skills-template'>
+            <h4>My Skills:</h4>
+            <div class='row'>
+                <ul class="list-group col-sm-6">
+                </ul>
+            </div>
+            <div class='row'>
+                <form class="col-sm-6 form-horizontal">
+                  <div class="form-group">
+                    <label for="new-name" class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-10">
+                      <input type="email" class="form-control" id="new-name" placeholder="Skill name">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="new-description" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                      <input type="email" class="form-control" id="new-description" placeholder="Skill description">
+                    </div>
+                  </div>
+                  <button type='button' class='pull-right btn btn-success' id='add-skill'>Add</button>
+                </form>
+            </div>
+        </script>
+
+        <script type='text/template' id='skill-template'>
+            <%= name %> <button class="btn btn-xs btn-primary pull-right">What?</button>
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="main-content">
+
+            </div>
+        </div>
+        <script>
+            function loadTemplate(id) {
+                return _.template($(id).html());
+            }
+
+            var skills = new Backbone.Collection([
+                {
+                    name: 'JavaScript',
+                    description: 'Makes things do stuff'
+                },
+                {
+                    name: 'CSS',
+                    description: 'Makes things look like stuff'
+                },
+                {
+                    name: 'HTML',
+                    description: 'Makes things have stuff'
+                }
+            ]);
+
+            var tom = new Backbone.Model({
+                name: 'Tom Hicks',
+                title: 'Developer',
+                skills: skills
+            });
+
+        </script>
+        <script>
+            var app = new Marionette.Application();
+            app.addRegions({
+                mainRegion: '#main-content'
+            });
+
+            app.addInitializer(function () {
+                this.mainRegion.show(new ProfileView({
+                    model: tom
+                }));
+            });
+
+            // =========================
+
+            var SkillView = Marionette.ItemView.extend({
+                template: loadTemplate('#skill-template'),
+
+                tagName: 'li',
+                className: 'list-group-item',
+
+                events: {
+                    'click button': 'tellMeSomething'
+                },
+
+                tellMeSomething: function (event) {
+                    alert(this.model.get('description'));
+                }
+            });
+
+            var SkillsView = Marionette.CompositeView.extend({
+                itemViewContainer: 'ul',
+                itemView: SkillView,
+                template: loadTemplate('#skills-template'),
+
+                ui: {
+                    inputs: 'form input',
+                    newName: '#new-name',
+                    newDescription: '#new-description',
+                    addButton: '#add-skill'
+                },
+
+                events: {
+                    'click @ui.addButton': 'addButtonClicked'
+                },
+
+                addButtonClicked: function () {
+
+                    var collectedFromElements = {
+                        name: this.ui.newName.val(),
+                        description: this.ui.newDescription.val()
+                    };
+
+
+                    if (collectedFromElements.name && collectedFromElements.description) {
+                        this.collection.add(collectedFromElements);
+
+                        this.ui.inputs.val('');
+                    }
+
+                    this.ui.newName.focus();
+                }
+
+            });
+
+            // ========================
+
+            var ProfileView = Marionette.Layout.extend({
+                template: loadTemplate('#profile-template'),
+                regions: {
+                    skillsRegion: '.skills'
+                },
+
+                onRender: function () {
+                    this.skillsRegion.show(new SkillsView({
+                        collection: this.model.get('skills')
+                    }))
+                }
+            });
+
+            // =======================
+
+            app.start();
+
+        </script>
+    </body>
+</html>
