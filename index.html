@@ -76,87 +76,8 @@
         </script>
         <script>
             var app = new Marionette.Application();
-            app.addRegions({
-                mainRegion: '#main-content'
-            });
-
-            app.addInitializer(function () {
-                this.mainRegion.show(new ProfileView({
-                    model: tom
-                }));
-            });
-
-            // =========================
-
-            var SkillView = Marionette.ItemView.extend({
-                template: loadTemplate('#skill-template'),
-
-                tagName: 'li',
-                className: 'list-group-item',
-
-                events: {
-                    'click button': 'tellMeSomething'
-                },
-
-                tellMeSomething: function (event) {
-                    alert(this.model.get('description'));
-                }
-            });
-
-            var SkillsView = Marionette.CompositeView.extend({
-                itemViewContainer: 'ul',
-                itemView: SkillView,
-                template: loadTemplate('#skills-template'),
-
-                ui: {
-                    inputs: 'form input',
-                    newName: '#new-name',
-                    newDescription: '#new-description',
-                    addButton: '#add-skill'
-                },
-
-                events: {
-                    'click @ui.addButton': 'addButtonClicked'
-                },
-
-                addButtonClicked: function () {
-
-                    var collectedFromElements = {
-                        name: this.ui.newName.val(),
-                        description: this.ui.newDescription.val()
-                    };
-
-
-                    if (collectedFromElements.name && collectedFromElements.description) {
-                        this.collection.add(collectedFromElements);
-
-                        this.ui.inputs.val('');
-                    }
-
-                    this.ui.newName.focus();
-                }
-
-            });
-
-            // ========================
-
-            var ProfileView = Marionette.Layout.extend({
-                template: loadTemplate('#profile-template'),
-                regions: {
-                    skillsRegion: '.skills'
-                },
-
-                onRender: function () {
-                    this.skillsRegion.show(new SkillsView({
-                        collection: this.model.get('skills')
-                    }))
-                }
-            });
-
-            // =======================
 
             app.start();
-
         </script>
     </body>
 </html>
